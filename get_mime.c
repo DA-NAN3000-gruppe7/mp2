@@ -2,21 +2,25 @@
 #include<stdlib.h>
 #include<string.h>
 
+#define TAB "\t"
+#define SPACE " "
 static char* get_mime(char *filename);
 
 int main(int argc, char* argv[]) {
-	char* type = get_mime(argv[1]);
-	printf("%s\n", type);
-
+	if (argc > 1) {
+		char* type = get_mime("");
+		printf("%s\n", type);
+	}
 	return 0;
 }
 
 
 static char* get_mime(char *filename) {
 	FILE *f;
-	int i = 0;
 	char buf[100];
 	char *ext;
+	if(filename[0] == '\0')
+		return "EMPTY_FILE";
 
 	ext = strrchr(filename, '.');
 	if (!ext) {
@@ -31,12 +35,12 @@ static char* get_mime(char *filename) {
 		exit(EXIT_FAILURE);
 	}
 	while( fgets(buf, 50, f) != NULL ) {
-		char *token = strtok(buf, "\t");
+		char *token = strtok(buf, TAB);
 		char *type = malloc (sizeof (char) * 30);
 
 		strcpy(type, token);
-		token = strtok(NULL, "\t");
-		token = strtok(token, " ");
+		token = strtok(NULL, TAB);
+		token = strtok(token, SPACE);
 		while (token != NULL)
 		{
 			char mime_ext[10];
@@ -47,7 +51,7 @@ static char* get_mime(char *filename) {
 				//char *ret = malloc (sizeof (type) * 30);
 				return type;
 			}
-			token = strtok(NULL, " ");
+			token = strtok(NULL, SPACE);
 
 
 		}
