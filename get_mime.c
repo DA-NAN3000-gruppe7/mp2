@@ -16,12 +16,16 @@ int main(int argc, char* argv[]) {
 
 
 static char* get_mime(char *filename) {
+
 	FILE *f;
 	char buf[100];
 	char *ext;
+
+	//if the string is empty
 	if(filename[0] == '\0')
 		return "EMPTY_FILE";
 
+	//gets the extention of the string
 	ext = strrchr(filename, '.');
 	if (!ext) {
 		return "NO_EXT";
@@ -31,24 +35,29 @@ static char* get_mime(char *filename) {
 
 	f = fopen("etc/mime.types", "r");
 	if(!f) {
-		printf("ERROR: can't open mime.types\n");
-		exit(EXIT_FAILURE);
+		return "CANNOT_OPEN_MIME.TYPES";
 	}
+	//parses the mime.types file
 	while( fgets(buf, 50, f) != NULL ) {
+
+		//initializes buffers to store mime-type and extension
 		char *token = strtok(buf, TAB);
 		char *type = malloc (sizeof (char) * 30);
 
 		strcpy(type, token);
 		token = strtok(NULL, TAB);
 		token = strtok(token, SPACE);
+
+		//iterates through all extensions of the mime-type
 		while (token != NULL)
 		{
 			char mime_ext[10];
 			token[strcspn(token, "\n")] = 0;
 			strcpy(mime_ext, token);
 
+			//condition is met if the mime extension matches the extension of the file
+			//respective mime-type is returned
 			if(strcmp(mime_ext, ext) == 0) {
-				//char *ret = malloc (sizeof (type) * 30);
 				return type;
 			}
 			token = strtok(NULL, SPACE);
