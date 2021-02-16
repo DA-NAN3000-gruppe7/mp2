@@ -38,6 +38,7 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 
 ## Instruksjoner
 * 	Programmet krever følgende:
+<br>
 		- **busybox** binære filer for å kjøre. Installer **busybox** med den tillhørende packagemanageren på distroet ditt.*
 
 	For å kjøre programmet trenger man bare å kjøre ./run. Dette skriptet laster ned dumb-init til bin, legger til busybox symlenker i bin, kompilerer C-koden og så lager en ny namespace og endrer rota til katalogen til **mp2**. Fra der kjører init.sh som burker dumb-init til å tillordne den PID 1. Fra dette lille init-skriptet kjører webserverern og systemet kjøres i en busybox shell container som man kan arbeide fra.
