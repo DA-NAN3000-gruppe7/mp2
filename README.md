@@ -47,6 +47,7 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 	Webserveren blir loggført i /var/log/debug.log
 
 ##Log
+<br>
 
 	16-02-2021
 		MAGNUS: Har nå konfigurert run.sh slik at den laster ned dumb-init om den ikke finnes i bin, den legger til busybox symlenker i bin, og kompilerer webserver.c. I tillegg kjører den en ny namespace og enderer rota til systemet, og kjører init.sh med dumb-init som shebang. init.sh aktiverer webserveren og kjører systemet i et busybox skall.
