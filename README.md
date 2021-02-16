@@ -6,7 +6,7 @@ Dette er markdown-dokumentet for milepæl 2 i DA-NAN3000. I dette dokumentet spe
 
 
 
-##Oppgave
+## Oppgave
 1. 	Utvid tjeneren fra milepæl 1, slik at den (minimum) kan leverere filer av følgende typer:
 
 	-text/html,
@@ -29,14 +29,14 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 	*[2021-01-18 ma. 15:50]* Merk: Filene som websiden består av skal være lagret i webroten på webtjeneren dere lager, og skal "serveres" av denne tjeneren.
 
 
-##Plan
+## Plan
 1. 	I denne oppgaven skal det lages en funksjon som kan lese av mime-typer til filer som blir spesifisert. Dette skal brukes av webserver programmet når en http forespørsel blir gjort som da returnerer mime-typen som blir vist i http-headeren. Det skal sendes riktig http-meldinger ettersom hva som blir returnert av get_mime(). Dersom filen ikke eksisterer eller det er en forespørsel til en fil av type som ikke er i */etc/mime.type* skal det sendes en 404
 
 2. 	Det skal lages et bash-skript som skal initialiserer og kjøre en container ved bruk av *chroot* og *unshare* kommandoene som gjør at roten bli i katalogen til milepæl 2 systemet. Dette skal også gjøre at man bare har oversikt over prosesser som er innenfor systemet.
 
 3. 	Det skal lages en .html og .css fil som blir returnert når man sender en http-forespørsel til port 80 på maskinen som webtjeneren kjører på. Disse skal lastes inn under en enkel forespørsel og tjenern skal da gi tillgang til alle filer under webroten*(var/www/)*
 
-##Instruksjoner
+## Instruksjoner
 * 	Programmet krever følgende:
 		- **busybox** binære filer for å kjøre. Installer **busybox** med den tillhørende packagemanageren på distroet ditt.*
 
@@ -46,7 +46,7 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 
 	Webserveren blir loggført i /var/log/debug.log
 
-##Log
+## Log
 <br>
 
 	16-02-2021
