@@ -37,15 +37,16 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 3. 	Det skal lages en .html og .css fil som blir returnert når man sender en http-forespørsel til port 80 på maskinen som webtjeneren kjører på. Disse skal lastes inn under en enkel forespørsel og tjenern skal da gi tillgang til alle filer under webroten*(var/www/)*
 
 ## Instruksjoner
-*	Programmet krever følgende:
-<br>
-		**busybox**-binære filer for å kjøre. Installer **busybox** med den tillhørende packagemanageren på distroet ditt.*
 
-*	For å kjøre programmet trenger man bare å kjøre ./run. Dette skriptet laster ned dumb-init til bin, legger til busybox symlenker i bin, kompilerer C-koden og så lager en ny namespace og endrer rota til katalogen til **mp2**. Fra der kjører init.sh som burker dumb-init til å tillordne den PID 1. Fra dette lille init-skriptet kjører webserverern og systemet kjøres i en busybox shell container som man kan arbeide fra.
+Programmet krever følgende:
 
-*	Webserveren kjører på port 80, og man kan gjøre HTTP forespørsler til tjeneren. Så lang kan man bare forespørre til index.asis filen, som bare inneholder en kort tekst om at programmet funker.
+*	**busybox**-binære filer for å kjøre. Installer **busybox** med den tillhørende packagemanageren på distroet ditt.*
 
-*	Webserveren blir loggført i /var/log/debug.log
+For å kjøre programmet trenger man bare å kjøre ./run. Dette skriptet laster ned dumb-init til bin, legger til busybox symlenker i bin, kompilerer C-koden og så lager en ny namespace og endrer rota til katalogen til **mp2**. Fra der kjører init.sh som burker dumb-init til å tillordne den PID 1. Fra dette lille init-skriptet kjører webserverern og systemet kjøres i en busybox shell container som man kan arbeide fra.
+
+Webserveren kjører på port 80, og man kan gjøre HTTP forespørsler til tjeneren. Så lang kan man bare forespørre til index.asis filen, som bare inneholder en kort tekst om at programmet funker.
+
+Webserveren blir loggført i /var/log/debug.log
 
 ## Log
 <br>
