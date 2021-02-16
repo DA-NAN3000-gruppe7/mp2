@@ -9,14 +9,14 @@ Dette er markdown-dokumentet for milepæl 2 i DA-NAN3000. I dette dokumentet spe
 ## Oppgave
 1. 	Utvid tjeneren fra milepæl 1, slik at den (minimum) kan leverere filer av følgende typer:
 
-	-text/html,
-	-text/plain,
-	-image/png,
-	-image/svg,
-	-application/xml,
-	-application/xslt+xml
-	-text/css
-	-application/json
+	* text/html,
+	* text/plain,
+	* image/png,
+	* image/svg,
+	* application/xml,
+	* application/xslt+xml
+	* text/css
+	* application/json
 
 	Identifiseringen av type skal gjøres ved hjelp av filendelsen. Eksempel: Hvis fila ender på .txt så er det av typen text/plain. Sammenheng mellom mime-typer og filendelser finner dere i filen /etc/mime.types.
 
