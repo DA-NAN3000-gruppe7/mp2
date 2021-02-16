@@ -8,7 +8,7 @@ static char* get_mime(char *filename);
 
 int main(int argc, char* argv[]) {
 	if (argc > 1) {
-		char* type = get_mime("");
+		char* type = get_mime(argv[1]);
 		printf("%s\n", type);
 	}
 	return 0;

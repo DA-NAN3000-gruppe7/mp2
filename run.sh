@@ -1,17 +1,37 @@
 #!/bin/bash
  
-#UNFINISHED SCRIPT!!!!!!!
-#NO DOCUMENTATION YET!
 
+#assings path to current directory and to init.sh
 ROTFS=$PWD
-INIT=init.sh
+INIT=$ROTFS/bin/init.sh
 
 
-cd       $ROTFS/bin/
-cp       /bin/busybox .
-for P in $(./busybox --list); do ln busybox $P; done;
+#if dumb-init is not in bin, download it
+if [ ! -f $ROTFS/bin/dumb-init ];then
+	 wget -O $ROTFS/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+	 chmod +x $ROTFS/bin/dumb-init
+fi
+#if there are no busybox sym-links, create them
+if [[ -z $(find $ROTFS/bin -type l -ls) ]];then
+	cd $ROTFS/bin/
+	cp /bin/busybox .
 
+	for P in $(./busybox --list); do 
+		ln -s busybox $P; 
+	done
+fi
 
+#compile the webserver.c code
+gcc $ROTFS/bin/webserver.c --static -o $ROTFS/bin/webserver.o; \
+sudo chown root:root $ROTFS/bin/webserver.o; sudo chmod u+s $ROTFS/bin/webserver.o
 
 cd $ROTFS
-sudo PATH=/bin unshare --fork --pid /usr/sbin/chroot . $ROTFS/bin/init.sh
+
+#mount /proc as proc in current directory
+sudo mount -t proc proc $ROTFS/proc
+
+#create new namespace and change root, executing init.sh
+sudo PATH=/bin unshare -p -f --mount-proc=$ROTFS/proc /usr/sbin/chroot . /bin/init.sh
+
+#unmounting the namespace
+sudo umount $ROTFS/proc

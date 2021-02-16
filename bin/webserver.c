@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <time.h>
 #include<sys/wait.h> 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,17 +14,23 @@
 #define LOKAL_PORT 80
 #define BAK_LOGG 10 // Størrelse på for kø ventende forespørsler 
 
-static void daemonizer();
-static void chroot_function();
-static void helloserver();
+void daemonizer();
+void chroot_function();
+void webserver();
 char * parseUrl(char sIn[]);
+void get_time();
 void func(int signum); 
 
 int main(int argc, char* argv[]) {
+
+    //running as root
+    setuid(0);
+    setgid(0);
+
     close(1);
     close(2);
 
-    int file = open("/var/log/debug.log", O_CREAT | O_RDWR, 0644);
+    int file = open("/var/log/debug.log", O_CREAT | O_RDWR | O_APPEND, 0644);
 
     dup2(file, 1);
     dup2(file, 2);
@@ -31,14 +38,13 @@ int main(int argc, char* argv[]) {
         daemonizer();
 
     chroot_function();
-    helloserver();
+    webserver();
     
-    //printf("test");
     close(file);
     return 0;
 }
 
-static void helloserver() {
+void webserver() {
 
     struct sockaddr_in  lok_adr;
     int sd, ny_sd;
@@ -55,8 +61,10 @@ static void helloserver() {
     lok_adr.sin_addr.s_addr = htonl(         INADDR_ANY);
 
     // Kobler sammen socket og lokal adresse
-    if ( 0==bind(sd, (struct sockaddr *)&lok_adr, sizeof(lok_adr)) )
+    if ( 0==bind(sd, (struct sockaddr *)&lok_adr, sizeof(lok_adr)) ) {
+        get_time();
         fprintf(stderr, "Prosess %d er knyttet til port %d.\n", getpid(), LOKAL_PORT);
+    }
     else
         exit(1);
 
@@ -105,7 +113,8 @@ static void helloserver() {
                         
                         fclose(fp);
                     } else {
-                        printf("Kan ikke lese fil..\n");
+                        get_time();
+                        fprintf(stderr, "Kan ikke lese fil..\n");
                         fflush(stdout);
                     }
                 }
@@ -124,7 +133,7 @@ static void helloserver() {
       }
 }
 
-static void daemonizer() {
+void daemonizer() {
     //create a process ID variable
     pid_t pid;
 
@@ -160,7 +169,7 @@ static void daemonizer() {
         exit(EXIT_SUCCESS);
 }
 
-static void chroot_function() {
+void chroot_function() {
     //calling the chroot process and sets "." as the root directory
     //if error code -1 is returned, the code exits
     if(chroot("/var/www/") == -1) {
@@ -204,7 +213,8 @@ char * parseUrl(char sIn[]) {
             tok = strtok(query, sep);
         }
         /* print got data */
-        printf("Wanted page is: %s%s\n", host, page);
+        get_time();
+        fprintf(stderr, "Wanted page is: %s%s\n", host, page);
         fflush(stdout);
 
         
@@ -217,6 +227,13 @@ char * parseUrl(char sIn[]) {
     return page;
 }
 
+//gets the current time, used for logging
+void get_time() {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
+    fprintf(stderr, "[%d-%02d-%02d %02d:%02d:%02d]: ", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+}
 
 void func(int signum) { 
     wait(NULL); 

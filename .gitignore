@@ -1,3 +1,6 @@
-*.o
 bin/*
-!bin/webserver.*
+proc/*
+!bin/webserver.c
+!bin/init.sh
+var/log/debug.log
+*.o
