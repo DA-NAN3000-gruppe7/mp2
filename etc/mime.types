@@ -1,5 +1,5 @@
 text/html				html
-text/plain				txt
+text/plain				txt asis
 image/png				png
 image/svg				svg
 application/xml			xml
