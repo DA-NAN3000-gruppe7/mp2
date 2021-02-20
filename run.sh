@@ -22,16 +22,19 @@ if [[ -z $(find $ROTFS/bin -type l -ls) ]];then
 fi
 
 #compile the webserver.c code
-gcc $ROTFS/bin/webserver.c --static -o $ROTFS/bin/webserver.o; \
-sudo chown root:root $ROTFS/bin/webserver.o; sudo chmod u+s $ROTFS/bin/webserver.o
+#adding a condition so that the server doesn't run if webserver.c failed compiling
+if gcc $ROTFS/bin/webserver.c --static -o $ROTFS/bin/webserver.o; then
+	sudo chown root:root $ROTFS/bin/webserver.o
+	sudo chmod u+s $ROTFS/bin/webserver.o
 
-cd $ROTFS
+	cd $ROTFS
 
-#mount /proc as proc in current directory
-sudo mount -t proc proc $ROTFS/proc
+	#mount /proc as proc in current directory
+	sudo mount -t proc proc $ROTFS/proc
 
-#create new namespace and change root, executing init.sh
-sudo PATH=/bin unshare -p -f --mount-proc=$ROTFS/proc /usr/sbin/chroot . /bin/init.sh
+	#create new namespace and change root, executing init.sh
+	sudo PATH=/bin unshare -p -f --mount-proc=$ROTFS/proc /usr/sbin/chroot . /bin/init.sh
 
-#unmounting the namespace
-sudo umount $ROTFS/proc
+	#unmounting the namespace
+	sudo umount $ROTFS/proc
+fi

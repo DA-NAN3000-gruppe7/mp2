@@ -30,11 +30,14 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 
 
 ## Plan
-1. 	I denne oppgaven skal det lages en funksjon som kan lese av mime-typer til filer som blir spesifisert. Dette skal brukes av webserver programmet når en http forespørsel blir gjort som da returnerer mime-typen som blir vist i http-headeren. Det skal sendes riktig http-meldinger ettersom hva som blir returnert av get_mime(). Dersom filen ikke eksisterer eller det er en forespørsel til en fil av type som ikke er i */etc/mime.type* skal det sendes en 404
+1. 	I denne oppgaven skal det lages en funksjon som kan lese av mime-typer til filer som blir spesifisert. Dette skal brukes av webserver programmet når en http forespørsel blir gjort som da returnerer mime-typen som blir vist i http-headeren. Det skal sendes riktig http-meldinger ettersom hva som blir returnert av get_mime(). Dersom filen ikke eksisterer eller det er en forespørsel til en fil av type som ikke er i */etc/mime.type* skal det sendes en 404.
+**FERDIG**
 
 2. 	Det skal lages et bash-skript som skal initialiserer og kjøre en container ved bruk av *chroot* og *unshare* kommandoene som gjør at roten bli i katalogen til milepæl 2 systemet. Dette skal også gjøre at man bare har oversikt over prosesser som er innenfor systemet.
+**FERDIG**
 
 3. 	Det skal lages en .html og .css fil som blir returnert når man sender en http-forespørsel til port 80 på maskinen som webtjeneren kjører på. Disse skal lastes inn under en enkel forespørsel og tjenern skal da gi tillgang til alle filer under webroten*(var/www/)*
+**FERDIG**
 
 ## Instruksjoner
 
@@ -50,6 +53,11 @@ Webserveren blir loggført i /var/log/debug.log
 
 ## Log
 <br>
+
+	19-02-2021
+		MAGNUS: Etter masse roting gjennom hele dagen, og helt siden 18., har jeg fått til å integrere get_mime() til selve webserver-koden, ordnet at /etc/mime.types blir lest inn i en buffer siden /etc/ blir stengt etter å sette chroot til /var/www, og så få til noe av det mest frustrerende jeg har gjort i hele mitt liv: å greie å tokenisere mime-typene fra bufferet. Jeg brukte flere timer, fordi strok() alltid pleide å stoppe på første newline i bufferet, selv om jeg kopierte det til en helt ny buffer. Men nå skal det funke. I tillegg har jeg gjort sånn at riktig HTTP-header kommer på HTTP responses til GET forespørsler. Jeg har også laget en enkel HTML og CSS fil, og index.html lastest inn dersom roten blir forespurt, altså dersom man går til localhost:80.
+		Utrolig nok, forespørr webleseren også etter CSS filen i HTML-dokumentet, som da leser inn fra css filen.
+		Det har ikke blitt gjort noe særlig testing, men vi kan i allefall si at MP2 ser ut til å være ferdig.
 
 	16-02-2021
 		MAGNUS: Har nå konfigurert run.sh slik at den laster ned dumb-init om den ikke finnes i bin, den legger til busybox symlenker i bin, og kompilerer webserver.c. I tillegg kjører den en ny namespace og enderer rota til systemet, og kjører init.sh med dumb-init som shebang. init.sh aktiverer webserveren og kjører systemet i et busybox skall.
