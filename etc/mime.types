@@ -3,6 +3,6 @@ text/plain	txt
 image/png	png
 image/svg	svg
 application/xml	xml
-application/xslt+xml	xslt	xslt
+application/xslt+xml	xsl	xslt
 text/css	css
 application/json	json
