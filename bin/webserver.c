@@ -36,10 +36,6 @@ char mime_buf[200];
 
 int main(int argc, char* argv[]) {
 
-    //running as root
-    setuid(0);
-    setgid(0);
-
     close(1);
     close(2);
 
@@ -123,27 +119,17 @@ void webserver() {
                         returned_str = "index.html";
 
                     char *mime_type = get_mime(returned_str);
+                    char *domain = strchr(mime_type, '/');
 
 
                     
                     if(strcmp(mime_type, EMPTY_FILE) == 0 ||
-                        strcmp(mime_type, NO_EXT) == 0) {
+                        strcmp(mime_type, NO_EXT) == 0 || 
+                        strcmp(mime_type, MIME_NOT_FOUND) == 0){
 
                         dup2(ny_sd, 1);
 
                         printf("HTTP/1.1 400 Bad Request\n");
-                        printf("\n");
-                        printf("%s\n", mime_type);
-
-                        get_time();
-                        fprintf(stderr, "%s\n", mime_type);
-                        fflush(stdout);
-                    }
-                    else if(strcmp(mime_type, MIME_NOT_FOUND) == 0) {
-
-                        dup2(ny_sd, 1);
-
-                        printf("HTTP/1.1 404 Not Found\n");
                         printf("\n");
                         printf("%s\n", mime_type);
 
@@ -199,6 +185,47 @@ void webserver() {
                         }
 
                     
+                     } else if(strcmp(domain, "image") == 0) { // Ved mime-type: image
+                     	
+                     	dup2(ny_sd, 1);
+                     	
+                       fprintf(stderr, "Forespørsel etter bilde\n");
+                       fprintf(stderr, "%s\n", mime_type);
+                       fflush(stdout);
+                       
+                       // Setter variabler for henting og skriving av fil
+                       int buff_size = 10240;
+                       char buff[buff_size];
+                       long file_size;
+                       FILE *pFile;
+                       size_t result;
+                       
+                       if((pFile = fopen(returned_str, "rb")) == NULL) {
+                       	fprintf(stderr, "Feil oppstod ved lasting av bilde.");
+				        fflush(stdout);
+                       }
+                       
+                       // Leser fil (binære data)
+                       while((result = fread(buff,1,buff_size, pFile)) > 0) {
+                       	send(ny_sd,buff,buff_size,0);
+                       }
+                       
+                       // Sender fil (binære data)
+                       if(result>0){
+                       	if(feof(pFile)){
+                       		send(ny_sd,buff,result,0);
+                       	} else {
+                       		fprintf(stderr, "Feil oppstod ved returnering av bilde.");
+					fflush(stdout);
+                       	}
+                       }
+                       
+                       // Lukker fil
+                       fclose(pFile);
+			
+			fprintf(stderr, "Ferdig med lasting av bilde.");
+			fflush(stdout);
+			
                      } else {
 
                         dup2(ny_sd, 1);
@@ -211,7 +238,7 @@ void webserver() {
                             stat(returned_str, &st);
                             printf("HTTP/1.1 200 OK\n");
                             printf("Content-Type: %s\n", mime_type);
-                            printf("Content-Length: %d\n", st.st_size);
+                            printf("Content-Length: %ld\n", st.st_size);
                             printf("\n");
 
                             

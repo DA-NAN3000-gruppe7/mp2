@@ -39,6 +39,9 @@ Ta gjerne utgangspunkt i eksempelet unshare-container
 3. 	Det skal lages en .html og .css fil som blir returnert når man sender en http-forespørsel til port 80 på maskinen som webtjeneren kjører på. Disse skal lastes inn under en enkel forespørsel og tjenern skal da gi tillgang til alle filer under webroten*(var/www/)*
 **FERDIG**
 
+4. Nettsiden (html-dokumentet) skal vise et bilde. Det er lagt inn en henvisning til et html-bilde som hentes fra tjeneren. Bildet hentes av webserveren og sendes som binære data og vises på nettsiden. 
+**FERDIG**
+
 ## Instruksjoner
 
 Programmet krever følgende:
@@ -49,10 +52,19 @@ For å kjøre programmet trenger man bare å kjøre ./run. Dette skriptet laster
 
 Webserveren kjører på port 80, og man kan gjøre HTTP forespørsler til tjeneren. Så lang kan man bare forespørre til index.asis filen, som bare inneholder en kort tekst om at programmet funker.
 
+Webserveren returnerer index.html-fila når man forespør / (localhost:80/). Denne fila har har referanse til .css-fila og et bilde. index.html og css-fila returneres som tekst. Bildet leses fra tjeneren og returneres som binære data og vises på klienten/nettleseren.
+
 Webserveren blir loggført i /var/log/debug.log
 
 ## Log
 <br>
+
+	17-03-2021
+		HENRIK: Lagt til charset og språk i meta-data for index.html, slik at norske tegn vises riktig når man laster nettsiden.
+		Lagt til funksjonalitet for å lese og sende image/png til klient:
+		- Sjekker mime-type
+		- Leser bilde fra tjener og sender binære data til klient
+		- Liten endring i variabel for header-data: fra %d til %ld
 
 	19-02-2021
 		MAGNUS: Etter masse roting gjennom hele dagen, og helt siden 18., har jeg fått til å integrere get_mime() til selve webserver-koden, ordnet at /etc/mime.types blir lest inn i en buffer siden /etc/ blir stengt etter å sette chroot til /var/www, og så få til noe av det mest frustrerende jeg har gjort i hele mitt liv: å greie å tokenisere mime-typene fra bufferet. Jeg brukte flere timer, fordi strok() alltid pleide å stoppe på første newline i bufferet, selv om jeg kopierte det til en helt ny buffer. Men nå skal det funke. I tillegg har jeg gjort sånn at riktig HTTP-header kommer på HTTP responses til GET forespørsler. Jeg har også laget en enkel HTML og CSS fil, og index.html lastest inn dersom roten blir forespurt, altså dersom man går til localhost:80.
