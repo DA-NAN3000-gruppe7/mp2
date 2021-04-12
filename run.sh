@@ -15,9 +15,9 @@ if [ ! -d $ROTFS/proc ];then
 fi
 
 # Hvis dumb-init ikke er i /bin, last ned.
-if [ ! -f /bin/dumb-init ];then
-    wget -O /bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
-    chmod +x /bin/dumb-init
+if [ ! -f $ROTFS/bin/dumb-init ];then
+    wget -O $ROTFS/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+    chmod +x $ROTFS/bin/dumb-init
 fi
 
 # Hvis det ikke er busybox sym-linker i bin, opprett dem.
@@ -31,7 +31,7 @@ if [[ -z $(find $ROTFS/bin -type l -ls) ]];then
     done
 fi
 
-if gcc -o $ROTFS/bin/mp2.o $ROTFS/bin/mp2.c;then
+if gcc $ROTFS/bin/mp2.c --static -o $ROTFS/bin/mp2.o ;then
     sudo chown root:root $ROTFS/bin/mp2.o
     sudo chmod u+s $ROTFS/bin/mp2.o
     
@@ -45,7 +45,7 @@ if gcc -o $ROTFS/bin/mp2.o $ROTFS/bin/mp2.c;then
     echo $ROTFS
 
     # Lag namespace, endre rot og kjør init.sh
-    sudo PATH=/bin unshare --fork --pid --mount-proc=$ROTFS/proc /usr/sbin/chroot . bin/init.sh
+    sudo PATH=/bin unshare --fork --pid --mount-proc=$ROTFS/proc /usr/sbin/chroot . /bin/init.sh
 
     # Unmount namespace.
     sudo umount $ROTFS/proc
