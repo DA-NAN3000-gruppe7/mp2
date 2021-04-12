@@ -41,9 +41,6 @@ if gcc $ROTFS/bin/mp2.c --static -o $ROTFS/bin/mp2.o ;then
     # Flytt til rotkatalog.
     cd $ROTFS
 
-    ls -l bin | grep -v busy
-    echo $ROTFS
-
     # Lag namespace, endre rot og kjør init.sh
     sudo PATH=/bin unshare --fork --pid --mount-proc=$ROTFS/proc /usr/sbin/chroot . /bin/init.sh
 
