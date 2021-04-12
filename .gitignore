@@ -1,2 +1,3 @@
+bin/*
 !bin/mp2.c
 !bin/init.sh
